@@ -50,7 +50,7 @@
     </cobertura-instrument>
   </target>
 
-  <target name="test" depends="instrument">
+  <target name="junit" depends="instrument">
     <junit fork="yes" dir="${basedir}" failureProperty="test.failed">
       <!-- Note the classpath order: instrumented classes are before the original (uninstrumented) classes.  This is important.  -->
       <classpath location="${instrumented.dir}" />
@@ -108,7 +108,7 @@
     <delete file="cobertura.ser" />
   </target>
 
-  <target name="coverage" depends="compile,test,coverage-report,summary-coverage-report,alternate-coverage-report" description="Compile, instrument ourself, run the tests and generate JUnit and coverage reports."/>
+  <target name="coverage" depends="compile,junit,coverage-report,summary-coverage-report,alternate-coverage-report" description="Compile, instrument ourself, run the tests and generate JUnit and coverage reports."/>
 
   <!-- Define the SonarQube target -->
   <target name="sonar">
