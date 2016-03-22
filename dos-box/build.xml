@@ -4,6 +4,12 @@
 
   <property file="build.properties" />
 
+  <path id="junit.class.path">
+    <pathelement location="${lib.dir}/junit-4.11.jar" />
+    <pathelement location="${lib.dir}/hamcrest-core-1.3.jar" />
+    <pathelement location="${classes.dir}" />
+  </path>
+
   <path id="cobertura.classpath">
     <!-- <pathelement location="${cobertura.dir}/lib/cobertura-2.1.1.jar" /> -->
     <fileset dir="${cobertura.dir}">
@@ -74,6 +80,19 @@
       </fileset>
       <report format="frames" todir="${reports.html.dir}" />
     </junitreport>
+  </target>
+
+  <target name="junit-only" depends="compile">
+    <mkdir dir="${test.report.dir}"/>
+    <junit printsummary="on" fork="true" haltonfailure="no">
+      <classpath refid="junit.class.path" />
+      <formatter type="xml" />
+      <batchtest todir="${test.report.dir}">
+        <fileset dir="${test.dir}">
+          <include name="**/*Test.java" />
+        </fileset>
+      </batchtest>
+    </junit>
   </target>
 
   <target name="coverage-check">
