@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project name="cobertura.examples.basic" default="coverage" basedir="." xmlns:sonar="antlib:org.sonar.ant">
+<project name="dos-box" default="coverage" basedir="." xmlns:sonar="antlib:org.sonar.ant">
 
   <property file="build.properties" />
 
@@ -103,6 +103,7 @@
     <delete dir="${classes.dir}" />
     <delete dir="${instrumented.dir}" />
     <delete dir="${reports.dir}" />
+    <delete dir="${jar.dir}" />
     <delete file="cobertura.log" />
     <delete file="cobertura.ser" />
   </target>
@@ -119,5 +120,16 @@
      <sonar:sonar />
   </target>
 
+  <target name="jar" depends="compile">
+    <mkdir dir="${jar.dir}"/>
+    <jar destfile="${jar.dir}/${ant.project.name}.jar" basedir="${classes.dir}">
+      <manifest>
+        <attribute name="Main-Class" value="${main-class}"/>
+      </manifest>
+    </jar>
+  </target>
 
+  <target name="run" depends="jar">
+    <java jar="${jar.dir}/${ant.project.name}.jar" fork="true"/>
+  </target>
 </project>
