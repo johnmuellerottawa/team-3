@@ -1,0 +1,72 @@
+<project name="dos-box" default="coverage-report" basedir=".">
+
+  <property file="build.properties" />
+
+  <path id="junit.class.path">
+    <pathelement location="${lib.dir}/junit-4.11.jar" />
+    <pathelement location="${lib.dir}/hamcrest-core-1.3.jar" />
+    <pathelement location="${classes.dir}" />
+  </path>
+
+  <path id="cobertura.classpath">
+    <fileset dir="${cobertura.dir}">
+      <include name="cobertura*.jar" />
+      <include name="lib/**/*.jar" />
+    </fileset>
+  </path>
+
+  <taskdef classpathref="cobertura.classpath" resource="tasks.properties"/>
+
+  <target name="init">
+    <mkdir dir="${classes.dir}" />
+    <mkdir dir="${instrumented.dir}" />
+    <mkdir dir="${coverage.xml.dir}" />
+  </target>
+
+  <target name="compile" depends="init">
+    <javac srcdir="${src.dir}" destdir="${classes.dir}" debug="yes" includeantruntime="false">
+      <classpath refid="cobertura.classpath" />
+    </javac>
+    <javac srcdir="${test.dir}" destdir="${classes.dir}" debug="yes" includeantruntime="false">
+      <classpath refid="junit.class.path"/>
+    </javac>
+  </target>
+
+  <target name="instrument" depends="compile">
+    <!-- Instrument the application classes, writing the instrumented classes into ${instrumented.dir}.  -->
+    <cobertura-instrument todir="${instrumented.dir}">
+      <fileset dir="${classes.dir}">
+        <!-- Instrument all the application classes, but don't instrument the test classes.  -->
+        <include name="**/*.class" />
+        <exclude name="**/*Test.class" />
+      </fileset>
+    </cobertura-instrument>
+  </target>
+
+  <target name="test-coverage" depends="instrument">
+    <junit fork="yes" dir="${basedir}">
+      <!-- Note the classpath order: instrumented classes are before the original (uninstrumented) classes.  This is important.  -->
+      <classpath location="${instrumented.dir}" />
+      <classpath location="${classes.dir}" />
+      <!-- The instrumented classes reference classes used by the Cobertura runtime, so Cobertura and its dependencies must be on your classpath.  -->
+      <classpath refid="cobertura.classpath" />
+      <batchtest>
+        <fileset dir="${test.dir}">
+           <include name="**/*Test.java" />
+        </fileset>
+      </batchtest>
+    </junit>
+  </target>
+
+  <target name="coverage-report" depends="test-coverage" description="Generate an XML file containing the coverage data">
+    <cobertura-report srcdir="${src.dir}" destdir="${coverage.xml.dir}" format="xml" />
+  </target>
+
+  <target name="clean" description="Remove all files created in the build/test process.">
+    <delete dir="${classes.dir}" />
+    <delete dir="${instrumented.dir}" />
+    <delete dir="${coverage.xml.dir}" />
+    <delete file="cobertura.ser" />
+  </target>
+
+</project>
