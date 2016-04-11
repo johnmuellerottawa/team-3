@@ -2,7 +2,7 @@
  * DOSBox, Scrum.org, Professional Scrum Developer Training
  * Authors: Rainer Grau, Daniel Tobler, Zuehlke Technology Group
  * Copyright (c) 2013 All Right Reserved
- * minor change 1
+ * minor change 2
  */ 
 
 package console;
