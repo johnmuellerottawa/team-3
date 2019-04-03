@@ -132,7 +132,7 @@
   <!-- Define the SonarQube target -->
   <target name="sonar">
      <taskdef uri="antlib:org.sonar.ant" resource="org/sonar/ant/antlib.xml">
-        <classpath path="sonarqube-ant-task-2.4.jar" />
+        <classpath path="sonarqube-ant-task-2.5.jar" />
      </taskdef>
  
      <!-- Execute the SonarQube analysis -->
